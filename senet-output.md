@@ -1,0 +1,1349 @@
+# 📁 PROJECT EXPORT FOR LLMs
+
+## 📊 Project Information
+
+- **Project Name**: `senet`
+- **Generated On**: 2026-03-16 08:10:01 (America/Los_Angeles / GMT-07:00)
+- **Total Files Processed**: 13
+- **Export Tool**: Easy Whole Project to Single Text File for LLMs v1.1.0
+- **Tool Author**: Jota / José Guilherme Pandolfi
+
+### ⚙️ Export Configuration
+
+| Setting | Value |
+|---------|-------|
+| Language | `en` |
+| Max File Size | `1 MB` |
+| Include Hidden Files | `false` |
+| Output Format | `both` |
+
+## 🌳 Project Structure
+
+```
+├── 📁 assets/
+│   ├── 📄 image_3.png (2.1 KB)
+│   ├── 📄 image_4.png (2.81 KB)
+│   ├── 📄 image_5.png (3.01 KB)
+│   ├── 📄 image_6.png (536 B)
+│   ├── 📄 image_7.png (2.49 KB)
+│   └── 📄 image_8.png (960 B)
+├── 📄 constants.py (178 B)
+├── 📄 dice.py (428 B)
+├── 📄 game_controller.py (8.68 KB)
+├── 📄 game.py (4.87 KB)
+├── 📄 main.py (131 B)
+├── 📄 senet_ai.py (13.37 KB)
+└── 📄 ui.py (11.82 KB)
+```
+
+## 📑 Table of Contents
+
+**Project Files:**
+
+- [📄 constants.py](#📄-constants-py)
+- [📄 dice.py](#📄-dice-py)
+- [📄 game_controller.py](#📄-game-controller-py)
+- [📄 game.py](#📄-game-py)
+- [📄 main.py](#📄-main-py)
+- [📄 senet_ai.py](#📄-senet-ai-py)
+- [📄 ui.py](#📄-ui-py)
+
+---
+
+## 📈 Project Statistics
+
+| Metric | Count |
+|--------|-------|
+| Total Files | 13 |
+| Total Directories | 1 |
+| Text Files | 7 |
+| Binary Files | 6 |
+| Total Size | 51.33 KB |
+
+### 📄 File Types Distribution
+
+| Extension | Count |
+|-----------|-------|
+| `.py` | 7 |
+| `.png` | 6 |
+
+## 💻 File Code Contents
+
+## 🚫 Binary/Excluded Files
+
+The following files were not included in the text content:
+
+- `assets/image_3.png`
+- `assets/image_4.png`
+- `assets/image_5.png`
+- `assets/image_6.png`
+- `assets/image_7.png`
+- `assets/image_8.png`
+
+### <a id="📄-constants-py"></a>📄 `constants.py`
+
+**File Info:**
+- **Size**: 178 B
+- **Extension**: `.py`
+- **Language**: `python`
+- **Location**: `constants.py`
+- **Relative Path**: `root`
+- **Created**: 2026-01-24 07:31:51 (America/Los_Angeles / GMT-08:00)
+- **Modified**: 2026-01-23 12:54:09 (America/Los_Angeles / GMT-08:00)
+- **MD5**: `8613364c37732c01824be07f09c2a5e3`
+- **SHA256**: `f71c05d41ebb2ff2d77b272ded1bca71d1c1d616070b002024fef9f63becff5c`
+- **Encoding**: ASCII
+
+**File code content:**
+
+```python
+BOARD_SIZE = 30
+HOUSE_OF_REBIRTH = 14
+HOUSE_OF_HAPPINESS = 25
+HOUSE_OF_WATER = 26
+HOUSE_OF_THREE_TRUTHS = 27
+HOUSE_OF_RE_ATOUM = 28
+HOUSE_OF_HORUS = 29
+PLAYER_1 = 1
+PLAYER_2 = 2
+
+```
+
+---
+
+### <a id="📄-dice-py"></a>📄 `dice.py`
+
+**File Info:**
+- **Size**: 428 B
+- **Extension**: `.py`
+- **Language**: `python`
+- **Location**: `dice.py`
+- **Relative Path**: `root`
+- **Created**: 2026-01-24 07:31:51 (America/Los_Angeles / GMT-08:00)
+- **Modified**: 2026-01-24 07:38:55 (America/Los_Angeles / GMT-08:00)
+- **MD5**: `cf342595111f300fb2a433389f09fe81`
+- **SHA256**: `924d3f66e4b64ae9ce456ccc8c3582113ead24a44ef566d16c685d7f0487f7f1`
+- **Encoding**: ASCII
+
+**File code content:**
+
+```python
+import random
+
+class SticksDice:
+    def __init__(self):
+        self.sticks = [False, False, False, False]
+        self.last = 0
+
+    def roll(self):
+        self.sticks = [random.choice([True, False]) for _ in range(4)]
+        dark = self.sticks.count(False)
+        if dark == 0:
+            self.last = 5
+        elif dark == 4:
+            self.last = 4
+        else:
+            self.last = dark
+        return self.last
+
+```
+
+---
+
+### <a id="📄-game-controller-py"></a>📄 `game_controller.py`
+
+**File Info:**
+- **Size**: 8.68 KB
+- **Extension**: `.py`
+- **Language**: `python`
+- **Location**: `game_controller.py`
+- **Relative Path**: `root`
+- **Created**: 2026-01-24 07:31:51 (America/Los_Angeles / GMT-08:00)
+- **Modified**: 2026-03-14 07:15:52 (America/Los_Angeles / GMT-07:00)
+- **MD5**: `19fa4150fb4600cc5be4a259e83eec6e`
+- **SHA256**: `d2bae59c87e70e15cb75579b1fdf77bb4af091ee9bed54fee9e066216ee81d7e`
+- **Encoding**: ASCII
+
+**File code content:**
+
+```python
+import time
+import threading
+import pygame
+from game import Game
+from constants import PLAYER_1, PLAYER_2
+from ui import SenetGUI
+from senet_ai import SenetAI
+
+
+class GameController:
+    def __init__(self):
+        self.game = Game()
+        self.ai = SenetAI(depth=3)
+        self.gui = SenetGUI(self.game, self.ai)
+
+    def _update_movable_pieces(self, player, roll):
+        moves = self.game.get_valid_moves(player, roll)
+        self.gui.movable_pieces = set(m[0] for m in moves)
+        return moves
+
+    def show_hint(self):
+        if self.game.current_player != PLAYER_1 or not self.gui.dice_rolled:
+            self.gui.hint_message = "Roll the dice first!"
+            self.gui.hint_timer = 120
+            self.gui.hint_move = None
+            return
+
+        moves = self.game.get_valid_moves(PLAYER_1, self.gui.current_roll)
+        if not moves:
+            self.gui.hint_message = "No valid moves available!"
+            self.gui.hint_timer = 120
+            self.gui.hint_move = None
+            return
+
+        temp_game = self.game.copy()
+        temp_game.current_player = PLAYER_1
+        best_move = self.ai.get_best_move_for_player(temp_game, self.gui.current_roll, PLAYER_1)
+
+        if best_move:
+            self.gui.hint_move = best_move
+            if best_move[1] >= 30:
+                self.gui.hint_message = f"Hint: Move from {best_move[0]+1} to EXIT"
+            else:
+                self.gui.hint_message = f"Hint: Move from {best_move[0]+1} to {best_move[1]+1}"
+            self.gui.hint_timer = 90
+        else:
+            self.gui.hint_message = "No good moves found!"
+            self.gui.hint_timer = 120
+            self.gui.hint_move = None
+
+    def handle_click(self, pos):
+        if self.gui.restart_rect.collidepoint(pos):
+            self.reset_game()
+            return
+        if self.gui.hint_rect.collidepoint(pos):
+            self.show_hint()
+            return
+        if self.gui.game_over:
+            return
+
+        if self.gui.exit_available and self.gui.exit_button_rect.collidepoint(pos) and self.gui.selected_piece is not None:
+            for move in self.gui.valid_moves:
+                if move[0] == self.gui.selected_piece and move[1] >= 30:
+                    self.game.make_move(self.gui.selected_piece, move[1])
+                    self.end_turn()
+                    return
+
+        if self.gui.depth_minus_rect.collidepoint(pos):
+            self.ai.max_depth = max(1, self.ai.max_depth - 1)
+            return
+        if self.gui.depth_plus_rect.collidepoint(pos):
+            self.ai.max_depth = min(6, self.ai.max_depth + 1)
+            return
+
+        if self.game.current_player == PLAYER_1:
+            if not self.gui.dice_rolled:
+                return
+            else:
+                index = self.gui.get_index_from_pos(pos)
+
+                move_made = False
+                for move in self.gui.valid_moves:
+                    if move[1] == index:
+                        self.game.make_move(self.gui.selected_piece, index)
+                        self.end_turn()
+                        move_made = True
+                        break
+
+                if move_made:
+                    return
+
+                if index is not None and self.game.board.squares[index] == PLAYER_1:
+                    self.gui.selected_piece = index
+                    all_moves = self.game.get_valid_moves(PLAYER_1, self.gui.current_roll)
+                    self.gui.valid_moves = [m for m in all_moves if m[0] == index]
+                    self.gui.exit_available = any(m[1] >= 30 for m in self.gui.valid_moves)
+                else:
+                    self.gui.selected_piece = None
+                    self.gui.valid_moves = []
+                    self.gui.exit_available = False
+
+    def end_turn(self):
+        self.gui.selected_piece = None
+        self.gui.valid_moves = []
+        self.gui.dice_rolled = False
+        self.gui.exit_available = False
+
+        self.gui.movable_pieces = set()
+
+        self.game.current_player = 3 - self.game.current_player
+
+        if self.game.current_player == PLAYER_1:
+            self.gui.message = "Your Turn. Press SPACE to Roll."
+        else:
+            self.gui.message = "AI Turn..."
+
+    def reset_game(self):
+        self.game = Game()
+        if hasattr(self.ai, "tt"):
+            self.ai.tt.clear()
+        self.gui.game = self.game
+        self.gui.selected_piece = None
+        self.gui.valid_moves = []
+        self.gui.message = "Press SPACE to Roll Dice"
+        self.gui.dice_rolled = False
+        self.gui.current_roll = 0
+        self.gui.game_over = False
+        self.gui.exit_available = False
+        self.gui.hint_message = ""
+        self.gui.hint_timer = 0
+        self.gui.hint_move = None
+        self.gui.ai_move_display = ""
+        self.gui.ai_move_display_timer = 0
+
+        self.gui.movable_pieces = set()
+
+    def run(self):
+        running = True
+        while running:
+            self.gui.draw_board()
+            pygame.display.flip()
+            self.gui.clock.tick(30)
+
+            winner = self.game.check_winner()
+            if winner:
+                self.gui.game_over = True
+                self.gui.message = f"Game Over! {'Human' if winner == PLAYER_1 else 'AI'} Wins!"
+
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    running = False
+                elif event.type == pygame.MOUSEBUTTONDOWN:
+                    self.handle_click(pygame.mouse.get_pos())
+                elif event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_SPACE:
+                        if not self.gui.game_over and not self.gui.dice_rolled and self.game.current_player == PLAYER_1:
+                            self.gui.current_roll = self.game.throw_sticks()
+                            self.game.apply_start_turn_rules(PLAYER_1, self.gui.current_roll)
+                            self.gui.dice_rolled = True
+
+                            moves = self._update_movable_pieces(PLAYER_1, self.gui.current_roll)
+
+                            if not moves:
+                                self.game.apply_end_turn_rules(PLAYER_1)
+                                self.gui.message = f"Rolled {self.gui.current_roll}. No moves! Press SPACE for AI."
+                                self.game.current_player = PLAYER_2
+                                self.gui.dice_rolled = False
+                                self.gui.movable_pieces = set()
+                            else:
+                                self.gui.message = f"Rolled {self.gui.current_roll}. Select a piece."
+                    elif event.key == pygame.K_r:
+                        self.reset_game()
+
+            if not self.gui.game_over and self.game.current_player == PLAYER_2:
+                pygame.event.pump()
+                time.sleep(0.3)
+
+                self.gui.current_roll = self.game.throw_sticks()
+                self.game.apply_start_turn_rules(PLAYER_2, self.gui.current_roll)
+
+                self.gui.movable_pieces = set()
+
+                self.gui.message = f"AI Rolled {self.gui.current_roll}..."
+                self.gui.draw_board()
+                pygame.display.flip()
+                time.sleep(0.3)
+
+                self.gui.message = f"AI Thinking (Roll {self.gui.current_roll})..."
+                self.gui.draw_board()
+                pygame.display.flip()
+
+                result = {"move": None}
+                snapshot_game = self.game.copy()
+                snapshot_roll = self.gui.current_roll
+
+                def ai_worker():
+                    result["move"] = self.ai.get_best_move(snapshot_game, snapshot_roll)
+
+                t = threading.Thread(target=ai_worker, daemon=True)
+                t.start()
+
+                while t.is_alive():
+                    pygame.event.pump()
+                    self.gui.draw_board()
+                    pygame.display.flip()
+                    self.gui.clock.tick(30)
+
+                move = result["move"]
+
+                if move:
+                    self.game.make_move(move[0], move[1])
+                    if move[1] >= 30:
+                        self.gui.ai_move_display = f"AI moved from {move[0]+1} to EXIT"
+                    else:
+                        self.gui.ai_move_display = f"AI moved from {move[0]+1} to {move[1]+1}"
+                    self.gui.ai_move_display_timer = 180
+                    self.gui.message = f"AI moved from {move[0]+1} to {move[1]+1}"
+                else:
+                    self.game.apply_end_turn_rules(PLAYER_2)
+                    self.gui.message = f"AI has no moves!"
+
+                time.sleep(0.3)
+                self.end_turn()
+
+```
+
+---
+
+### <a id="📄-game-py"></a>📄 `game.py`
+
+**File Info:**
+- **Size**: 4.87 KB
+- **Extension**: `.py`
+- **Language**: `python`
+- **Location**: `game.py`
+- **Relative Path**: `root`
+- **Created**: 2026-01-24 07:31:51 (America/Los_Angeles / GMT-08:00)
+- **Modified**: 2026-03-14 07:17:44 (America/Los_Angeles / GMT-07:00)
+- **MD5**: `28ba058c2a88d66c46decb6c7b02c7ca`
+- **SHA256**: `30f7630145094019303370acb3aa541fe224641ff63dc5f1bcb02e24d0cffe25`
+- **Encoding**: ASCII
+
+**File code content:**
+
+```python
+from constants import (
+    BOARD_SIZE,
+    HOUSE_OF_REBIRTH,
+    HOUSE_OF_HAPPINESS,
+    HOUSE_OF_WATER,
+    HOUSE_OF_THREE_TRUTHS,
+    HOUSE_OF_RE_ATOUM,
+    HOUSE_OF_HORUS,
+    PLAYER_1,
+    PLAYER_2,
+)
+from dice import SticksDice
+
+
+class Board:
+    def __init__(self):
+        self.squares = [0] * BOARD_SIZE
+        for i in range(14):
+            self.squares[i] = PLAYER_1 if i % 2 == 0 else PLAYER_2
+
+    def copy(self):
+        b = Board()
+        b.squares = self.squares[:]
+        return b
+
+
+class Game:
+    def __init__(self):
+        self.board = Board()
+        self.current_player = PLAYER_1
+        self.dice = SticksDice()
+        self.last_roll = 0
+
+        self.pending_trap_returns = {
+            PLAYER_1: [],
+            PLAYER_2: [],
+        }
+
+    @property
+    def sticks(self):
+        return self.dice.sticks
+
+    def throw_sticks(self):
+        self.last_roll = self.dice.roll()
+        return self.last_roll
+
+    def apply_start_turn_rules(self, player, dice_roll):
+        """
+        If player has a piece on Three Truths or Re-Atoum at the start of the turn,
+        mark it as "must return at end of turn if not exited".
+        """
+        self.pending_trap_returns[player] = []
+
+        if self.board.squares[HOUSE_OF_THREE_TRUTHS] == player:
+            self.pending_trap_returns[player].append(HOUSE_OF_THREE_TRUTHS)
+
+        if self.board.squares[HOUSE_OF_RE_ATOUM] == player:
+            self.pending_trap_returns[player].append(HOUSE_OF_RE_ATOUM)
+
+    def apply_end_turn_rules(self, player):
+        pending = self.pending_trap_returns.get(player, [])
+        if not pending:
+            return
+
+        for idx in pending:
+            if 0 <= idx < BOARD_SIZE and self.board.squares[idx] == player:
+                self._send_to_rebirth(player, idx)
+
+        self.pending_trap_returns[player] = []
+
+    def get_valid_moves(self, player, dice_roll):
+        moves = []
+        for i in range(BOARD_SIZE):
+            if self.board.squares[i] == player:
+                target = i + dice_roll
+                if self.can_move(i, target, player, dice_roll):
+                    moves.append((i, target))
+        return moves
+
+    def can_move(self, current, target, player, dice_roll):
+       
+        if current == HOUSE_OF_THREE_TRUTHS:
+            return target >= BOARD_SIZE and dice_roll == 3
+
+        if current == HOUSE_OF_RE_ATOUM:
+            return target >= BOARD_SIZE and dice_roll == 2
+
+        if target >= BOARD_SIZE:
+            if current == HOUSE_OF_HORUS:
+                return True
+            if current == HOUSE_OF_HAPPINESS:
+                return dice_roll == 5
+            return False
+
+        if current < HOUSE_OF_HAPPINESS and target > HOUSE_OF_HAPPINESS:
+            return False
+
+        if self.board.squares[target] == 0:
+            return True
+
+        if self.board.squares[target] == player:
+            return False
+
+        return True
+
+    def make_move(self, current, target):
+        player = self.board.squares[current]
+        if player == 0:
+            return
+
+        if self.board.squares[HOUSE_OF_HORUS] == player and current != HOUSE_OF_HORUS:
+            self._send_to_rebirth(player, HOUSE_OF_HORUS)
+
+        if target >= BOARD_SIZE:
+            self.board.squares[current] = 0
+            self.apply_end_turn_rules(player)
+            return
+
+        t = self.board.squares[target]
+        if t != 0 and t != player:
+            self.board.squares[target] = player
+            self.board.squares[current] = t
+        else:
+            self.board.squares[target] = player
+            self.board.squares[current] = 0
+
+        if target == HOUSE_OF_WATER and self.board.squares[target] == player:
+            self._send_to_rebirth(player, HOUSE_OF_WATER)
+
+        self.apply_end_turn_rules(player)
+
+    def check_winner(self):
+        p1 = self.board.squares.count(PLAYER_1)
+        p2 = self.board.squares.count(PLAYER_2)
+        if p1 == 0:
+            return PLAYER_1
+        if p2 == 0:
+            return PLAYER_2
+        return None
+
+    def copy(self):
+        g = Game()
+        g.board = self.board.copy()
+        g.current_player = self.current_player
+        g.dice.sticks = self.dice.sticks[:]
+        g.dice.last = self.dice.last
+        g.last_roll = self.last_roll
+        g.pending_trap_returns = {
+            PLAYER_1: self.pending_trap_returns[PLAYER_1][:],
+            PLAYER_2: self.pending_trap_returns[PLAYER_2][:],
+        }
+        return g
+
+    def _send_to_rebirth(self, player, from_index):
+        if self.board.squares[from_index] == player:
+            self.board.squares[from_index] = 0
+
+        pos = HOUSE_OF_REBIRTH
+        while pos >= 0 and self.board.squares[pos] != 0:
+            pos -= 1
+
+        if pos >= 0:
+            self.board.squares[pos] = player
+        else:
+            for back in range(HOUSE_OF_REBIRTH, -1, -1):
+                if self.board.squares[back] == 0:
+                    self.board.squares[back] = player
+                    break
+
+```
+
+---
+
+### <a id="📄-main-py"></a>📄 `main.py`
+
+**File Info:**
+- **Size**: 131 B
+- **Extension**: `.py`
+- **Language**: `python`
+- **Location**: `main.py`
+- **Relative Path**: `root`
+- **Created**: 2026-01-24 07:31:51 (America/Los_Angeles / GMT-08:00)
+- **Modified**: 2026-01-23 12:54:09 (America/Los_Angeles / GMT-08:00)
+- **MD5**: `2385d899318a9f77a9031e0fdb9d073b`
+- **SHA256**: `60e5c4cd2f2bf9a7dec6ff42fb66d245b336671a3e80950555d2116526be4101`
+- **Encoding**: ASCII
+
+**File code content:**
+
+```python
+from game_controller import GameController
+
+if __name__ == "__main__":
+    controller = GameController()
+    controller.run()
+
+```
+
+---
+
+### <a id="📄-senet-ai-py"></a>📄 `senet_ai.py`
+
+**File Info:**
+- **Size**: 13.37 KB
+- **Extension**: `.py`
+- **Language**: `python`
+- **Location**: `senet_ai.py`
+- **Relative Path**: `root`
+- **Created**: 2026-01-24 07:31:51 (America/Los_Angeles / GMT-08:00)
+- **Modified**: 2026-03-14 07:21:08 (America/Los_Angeles / GMT-07:00)
+- **MD5**: `17b6a7aae9f36b94ba76c652802916db`
+- **SHA256**: `cfa72150326afabd8c6a3907f898c0514d1a4f6d99eef0fa835ff270ffb45b15`
+- **Encoding**: ASCII
+
+**File code content:**
+
+```python
+import hashlib
+import math
+from collections import OrderedDict  
+
+from constants import BOARD_SIZE, PLAYER_1, PLAYER_2
+from game import Game
+
+
+class SenetAI:
+    def __init__(self, depth=2):
+        import os
+
+        self.max_depth = depth
+        self.nodes_visited = 0
+
+        self.tt = OrderedDict()
+        self.tt_max = 50000
+
+        self.position_history = []
+
+        self.probabilities = self.compute_stick_probabilities()
+
+        env_level = os.environ.get("SENET_DEBUG", "").strip()
+        if env_level == "":
+            self.debug_level = 1
+        else:
+            try:
+                self.debug_level = int(env_level)
+            except ValueError:
+                self.debug_level = 1
+
+        self.trace_enabled = (self.debug_level >= 2)
+
+        try:
+            self.trace_node_limit = int(os.environ.get("SENET_TRACE_LIMIT", "5000"))
+        except ValueError:
+            self.trace_node_limit = 5000
+
+        self._trace_printed = 0
+        self._trace_root_depth = 0
+
+    def initial_state(self):
+        """Initial state for the search problem."""
+        g = Game()
+        return g
+
+    def state(self, game, player, dice_roll):
+        """A state representation: board + current player + dice roll (when relevant)."""
+        return (tuple(game.board.squares), player, int(dice_roll))
+
+    def actions(self, game, player, dice_roll):
+        """Available actions from state."""
+        return game.get_valid_moves(player, dice_roll)
+
+    def transition(self, game, move):
+        """State transition: apply action on a copy and return new game."""
+        new_game = game.copy()
+        new_game.make_move(move[0], move[1])
+        return new_game
+
+    @staticmethod
+    def step_cost(move):
+        """Uniform move cost (Req #1: cost)."""
+        return 1
+
+    @staticmethod
+    def goal_test(game):
+        """Goal test: terminal if winner exists."""
+        return game.check_winner() is not None
+
+    @staticmethod
+    def compute_stick_probabilities():
+        """
+        4 sticks, each side equiprobable.
+        Your dice mapping:
+          dark_count == 0 -> roll 5
+          dark_count == 4 -> roll 4
+          else -> roll = dark_count (1..3)
+        """
+        import itertools
+
+        counts = {1: 0, 2: 0, 3: 0, 4: 0, 5: 0}
+        total = 0
+
+        for sticks in itertools.product([True, False], repeat=4):
+            total += 1
+            dark = sticks.count(False)
+
+            if dark == 0:
+                r = 5
+            elif dark == 4:
+                r = 4
+            else:
+                r = dark
+
+            counts[r] += 1
+
+        return {r: counts[r] / total for r in sorted(counts)}
+
+    def _trace(self, msg, depth):
+        if not self.trace_enabled:
+            return
+        if self._trace_printed >= self.trace_node_limit:
+            if self._trace_printed == self.trace_node_limit:
+                print("[TRACE] Limit reached. Further trace output suppressed.")
+                self._trace_printed += 1
+            return
+        indent = "  " * max(0, (self._trace_root_depth - depth))
+        print(f"{indent}{msg}")
+        self._trace_printed += 1
+
+    def _store_tt(self, key, value):
+        self.tt[key] = value
+        if len(self.tt) > self.tt_max:
+            self.tt.popitem(last=False)
+
+    def get_position_hash(self, board_squares, player, dice_roll):
+        board_str = ''.join(map(str, board_squares)) + str(player) + str(dice_roll)
+        return hashlib.md5(board_str.encode()).hexdigest()[:16]
+
+    def order_moves(self, game, moves, player):
+        scored_moves = []
+        for move in moves:
+            score = 0
+
+            if move[1] < BOARD_SIZE:
+                score += (move[1] - move[0])
+            else:
+                score += 100
+
+            if move[1] < BOARD_SIZE and game.board.squares[move[1]] != 0 and game.board.squares[move[1]] != player:
+                score += 50
+
+            scored_moves.append((score, move))
+
+        scored_moves.sort(reverse=True)
+        return [m for s, m in scored_moves]
+
+    def get_best_move(self, game, dice_roll):
+        self.nodes_visited = 0
+        self.position_history.clear()
+        self._trace_printed = 0
+        self._trace_root_depth = self.max_depth
+
+        moves = game.get_valid_moves(PLAYER_2, dice_roll)
+
+        if not moves:
+            if self.debug_level >= 1:
+                print("Nodes Visited: 0")
+                print("Best Move: None | Best Value: -inf")
+            return None
+
+        moves = self.order_moves(game, moves, PLAYER_2)
+
+        if len(moves) == 1:
+            move = moves[0]
+            new_game = game.copy()
+            new_game.make_move(move[0], move[1])
+
+            pos_hash = self.get_position_hash(new_game.board.squares, PLAYER_1, 0)
+            self.position_history.append(pos_hash)
+
+            val = self.expectiminimax(new_game, self.max_depth - 1, is_chance=True, is_maximizing=False)
+
+            self.position_history.pop()
+
+            if self.debug_level >= 1:
+                print(f"Nodes Visited: {self.nodes_visited}")
+                print(f"Best Move: {move} | Best Value: {val:.4f}")
+            return move
+
+        best_val = -math.inf
+        best_move = None
+
+        if self.trace_enabled:
+            self._trace(f"[ROOT] AI evaluating {len(moves)} moves for roll={dice_roll}", self.max_depth)
+
+        for move in moves:
+            new_game = game.copy()
+            new_game.make_move(move[0], move[1])
+
+            pos_hash = self.get_position_hash(new_game.board.squares, PLAYER_1, 0)
+            self.position_history.append(pos_hash)
+
+            val = self.expectiminimax(new_game, self.max_depth - 1, is_chance=True, is_maximizing=False)
+
+            self.position_history.pop()
+
+            if self.trace_enabled:
+                self._trace(f"[ROOT] move={move} -> value={val:.4f}", self.max_depth)
+
+            if val > best_val:
+                best_val = val
+                best_move = move
+
+        if self.debug_level >= 1:
+            print(f"Nodes Visited: {self.nodes_visited}")
+            print(f"Best Move: {best_move} | Best Value: {best_val:.4f}")
+
+        return best_move
+
+    def get_best_move_for_player(self, game, dice_roll, player):
+        """
+        Used for hints.
+        evaluate() is from PLAYER_2 perspective (higher is better for AI),
+        so PLAYER_1 chooses the move that MINIMIZES that score.
+        """
+        self.nodes_visited = 0
+        self.position_history.clear()
+        self._trace_printed = 0
+        self._trace_root_depth = self.max_depth
+
+        moves = game.get_valid_moves(player, dice_roll)
+        if not moves:
+            return None
+
+        moves = self.order_moves(game, moves, player)
+
+        if len(moves) == 1:
+            return moves[0]
+
+        best_move = None
+        best_val = -math.inf if player == PLAYER_2 else math.inf
+
+        for move in moves:
+            new_game = game.copy()
+            new_game.make_move(move[0], move[1])
+
+            next_player = 3 - player
+            pos_hash = self.get_position_hash(new_game.board.squares, next_player, 0)
+            self.position_history.append(pos_hash)
+
+            val = self.expectiminimax(
+                new_game,
+                self.max_depth - 1,
+                is_chance=True,
+                is_maximizing=(next_player == PLAYER_2)
+            )
+
+            self.position_history.pop()
+
+            if player == PLAYER_2:
+                if val > best_val:
+                    best_val = val
+                    best_move = move
+            else:
+                if val < best_val:
+                    best_val = val
+                    best_move = move
+
+        return best_move
+
+    def expectiminimax(self, game, depth, is_chance, is_maximizing, dice_roll=0):
+        self.nodes_visited += 1
+
+        node_type = "CHANCE" if is_chance else ("MAX(AI)" if is_maximizing else "MIN(HUMAN)")
+        current_player = PLAYER_2 if is_maximizing else PLAYER_1
+
+        pos_hash = self.get_position_hash(game.board.squares, current_player, dice_roll)
+        key = (pos_hash, depth, is_chance, is_maximizing, dice_roll)
+
+        # TT hit
+        if key in self.tt:
+            val = self.tt[key]
+            self.tt.move_to_end(key)
+            self._trace(f"[TT] {node_type} depth={depth} roll={dice_roll} -> {val:.4f}", depth)
+            return val
+
+        if pos_hash in self.position_history[:-1]:
+            self._trace(f"[REPEAT] {node_type} depth={depth} roll={dice_roll} -> 0.0000", depth)
+            return 0.0
+
+        winner = game.check_winner()
+        if winner == PLAYER_2:
+            v = 10000.0
+            self._store_tt(key, v)
+            self._trace(f"[TERM] AI WIN depth={depth} -> {v:.1f}", depth)
+            return v
+        if winner == PLAYER_1:
+            v = -10000.0
+            self._store_tt(key, v)
+            self._trace(f"[TERM] HUMAN WIN depth={depth} -> {v:.1f}", depth)
+            return v
+
+        if depth == 0:
+            v = float(self.evaluate(game))
+            self._store_tt(key, v)
+            self._trace(f"[EVAL] depth=0 -> {v:.4f}", depth)
+            return v
+
+        self._trace(f"[ENTER] {node_type} depth={depth} roll={dice_roll}", depth)
+
+        if is_chance:
+            expected_value = 0.0
+            child_depth = depth - 1  
+            for roll, prob in self.probabilities.items():
+                child_val = self.expectiminimax(
+                    game,
+                    child_depth,
+                    is_chance=False,
+                    is_maximizing=is_maximizing,
+                    dice_roll=roll
+                )
+                expected_value += child_val * prob
+                self._trace(f"[CHANCE] roll={roll} prob={prob:.4f} child={child_val:.4f}", depth)
+
+            self._store_tt(key, expected_value)
+            self._trace(f"[RETURN] CHANCE depth={depth} -> {expected_value:.4f}", depth)
+            return expected_value
+
+        if is_maximizing:
+            base_game = game.copy()
+            if hasattr(base_game, "apply_start_turn_rules"):
+                base_game.apply_start_turn_rules(PLAYER_2, dice_roll)
+
+            moves = base_game.get_valid_moves(PLAYER_2, dice_roll)
+            if not moves:
+                if hasattr(base_game, "apply_end_turn_rules"):
+                    base_game.apply_end_turn_rules(PLAYER_2)
+
+                v = self.expectiminimax(base_game, depth - 1, is_chance=True, is_maximizing=False)
+                self._store_tt(key, v)
+                self._trace(f"[PASS] MAX no-moves depth={depth} -> {v:.4f}", depth)
+                return v
+
+            moves = self.order_moves(base_game, moves, PLAYER_2)
+            max_val = -math.inf
+
+            for move in moves:
+                new_game = base_game.copy()
+                new_game.make_move(move[0], move[1])
+
+                new_pos_hash = self.get_position_hash(new_game.board.squares, PLAYER_1, 0)
+                self.position_history.append(new_pos_hash)
+
+                val = self.expectiminimax(new_game, depth - 1, is_chance=True, is_maximizing=False)
+
+                self.position_history.pop()
+
+                self._trace(f"[MAX] move={move} -> {val:.4f}", depth)
+
+                if val > max_val:
+                    max_val = val
+                if max_val > 5000:
+                    break
+
+            self._store_tt(key, max_val)
+            self._trace(f"[RETURN] MAX depth={depth} -> {max_val:.4f}", depth)
+            return max_val
+
+        else:
+            base_game = game.copy()
+            if hasattr(base_game, "apply_start_turn_rules"):
+                base_game.apply_start_turn_rules(PLAYER_1, dice_roll)
+
+            moves = base_game.get_valid_moves(PLAYER_1, dice_roll)
+            if not moves:
+                if hasattr(base_game, "apply_end_turn_rules"):
+                    base_game.apply_end_turn_rules(PLAYER_1)
+
+                v = self.expectiminimax(base_game, depth - 1, is_chance=True, is_maximizing=True)
+                self._store_tt(key, v)
+                self._trace(f"[PASS] MIN no-moves depth={depth} -> {v:.4f}", depth)
+                return v
+
+            moves = self.order_moves(base_game, moves, PLAYER_1)
+            min_val = math.inf
+
+            for move in moves:
+                new_game = base_game.copy()
+                new_game.make_move(move[0], move[1])
+
+                new_pos_hash = self.get_position_hash(new_game.board.squares, PLAYER_2, 0)
+                self.position_history.append(new_pos_hash)
+
+                val = self.expectiminimax(new_game, depth - 1, is_chance=True, is_maximizing=True)
+
+                self.position_history.pop()
+
+                self._trace(f"[MIN] move={move} -> {val:.4f}", depth)
+
+                if val < min_val:
+                    min_val = val
+                if min_val < -5000:
+                    break
+
+            self._store_tt(key, min_val)
+            self._trace(f"[RETURN] MIN depth={depth} -> {min_val:.4f}", depth)
+            return min_val
+
+    def evaluate(self, game):
+        score = 0
+
+        p2_pieces = 0
+        p2_score = 0
+        p1_pieces = 0
+        p1_score = 0
+
+        for i in range(BOARD_SIZE):
+            if game.board.squares[i] == PLAYER_2:
+                p2_pieces += 1
+                p2_score += (i + 1)
+                if i >= 25:
+                    p2_score += 5
+            elif game.board.squares[i] == PLAYER_1:
+                p1_pieces += 1
+                p1_score += (i + 1)
+                if i >= 25:
+                    p1_score += 5
+
+        p2_borne_off = 7 - p2_pieces
+        p1_borne_off = 7 - p1_pieces
+
+        score += (p2_borne_off * 50) - (p1_borne_off * 50)
+        score += (p2_score - p1_score)
+
+        return score
+
+```
+
+---
+
+### <a id="📄-ui-py"></a>📄 `ui.py`
+
+**File Info:**
+- **Size**: 11.82 KB
+- **Extension**: `.py`
+- **Language**: `python`
+- **Location**: `ui.py`
+- **Relative Path**: `root`
+- **Created**: 2026-01-24 07:31:51 (America/Los_Angeles / GMT-08:00)
+- **Modified**: 2026-03-14 07:22:54 (America/Los_Angeles / GMT-07:00)
+- **MD5**: `6d38ad08a6bc9b0580eac80c7f93255a`
+- **SHA256**: `9fc195dd39592289e0caacc6d48cf0d94e09b6db498785ef0755de365bc00e11`
+- **Encoding**: ASCII
+
+**File code content:**
+
+```python
+import pygame
+from constants import PLAYER_1, PLAYER_2, BOARD_SIZE
+
+COLOR_BG = (245, 222, 179) 
+COLOR_BOARD = (210, 180, 140) 
+COLOR_LINES = (139, 69, 19) 
+COLOR_P1 = (255, 255, 255)
+COLOR_P2 = (0, 0, 0)
+COLOR_HIGHLIGHT = (0, 255, 0)
+COLOR_TEXT = (0, 0, 0)
+COLOR_SPECIAL = (255, 215, 0) 
+
+SCREEN_WIDTH = 1000
+SCREEN_HEIGHT = 700
+SQUARE_SIZE = 80
+BOARD_OFFSET_X = 100
+BOARD_OFFSET_Y = 200
+
+class SenetGUI:
+    def __init__(self, game, ai):
+        pygame.init()
+        self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+        pygame.display.set_caption("Senet - Ancient Egyptian Game")
+        self.clock = pygame.time.Clock()
+        self.font = pygame.font.SysFont('Arial', 24)
+        self.large_font = pygame.font.SysFont('Arial', 40)
+
+        self.game = game
+        self.ai = ai
+
+        self.selected_piece = None
+        self.valid_moves = []
+        self.message = "Press SPACE to Roll Dice"
+        self.dice_rolled = False
+        self.current_roll = 0
+        self.game_over = False
+        self.depth_minus_rect = pygame.Rect(800, 600, 40, 40)
+        self.depth_plus_rect = pygame.Rect(850, 600, 40, 40)
+        self.house_images = {}
+        self.load_house_images()
+        self.exit_button_rect = pygame.Rect(SCREEN_WIDTH - 140, SCREEN_HEIGHT - 90, 120, 40)
+        self.exit_available = False
+        self.restart_rect = pygame.Rect(40, SCREEN_HEIGHT - 90, 120, 40)
+        self.hint_rect = pygame.Rect(170, SCREEN_HEIGHT - 90, 120, 40)
+
+        self.movable_pieces = set()
+
+        self.pos_map = {}
+        for i in range(10):
+            self.pos_map[i] = (0, i)
+        for i in range(10):
+            self.pos_map[10 + i] = (1, 9 - i)
+        for i in range(10):
+            self.pos_map[20 + i] = (2, i)
+
+        self.hint_message = ""
+        self.hint_timer = 0
+        self.hint_move = None
+
+        self.ai_move_display = ""
+        self.ai_move_display_timer = 0
+
+    def load_house_images(self):
+        def load(path):
+            return pygame.image.load(path).convert_alpha()
+        self.house_images["horus"] = load("assets/image_3.png")           # square 30
+        self.house_images["re_atoum"] = load("assets/image_4.png")        # square 29
+        self.house_images["three_truths"] = load("assets/image_5.png")    # square 28
+        self.house_images["water"] = load("assets/image_6.png")           # square 27
+        self.house_images["happiness"] = load("assets/image_7.png")       # square 26
+        self.house_images["rebirth"] = load("assets/image_8.png")         # square 15
+
+    def get_screen_pos(self, index):
+        if index >= BOARD_SIZE:
+            return (SCREEN_WIDTH - 100, SCREEN_HEIGHT - 100) 
+        row, col = self.pos_map[index]
+        x = BOARD_OFFSET_X + col * SQUARE_SIZE
+        y = BOARD_OFFSET_Y + row * SQUARE_SIZE
+        return x, y
+
+    def get_index_from_pos(self, pos):
+        x, y = pos
+        x -= BOARD_OFFSET_X
+        y -= BOARD_OFFSET_Y
+
+        if x < 0 or y < 0:
+            return None
+
+        col = x // SQUARE_SIZE
+        row = y // SQUARE_SIZE
+
+        if not (0 <= col < 10 and 0 <= row < 3):
+            return None
+
+        if row == 0:
+            return col
+        elif row == 1:
+            return 19 - col
+        elif row == 2:
+            return 20 + col
+        return None
+
+    def draw_board(self):
+        self.screen.fill(COLOR_BG)
+
+        for i in range(BOARD_SIZE):
+            x, y = self.get_screen_pos(i)
+            rect = pygame.Rect(x, y, SQUARE_SIZE, SQUARE_SIZE)
+
+            color = COLOR_BOARD
+            if i == 14: color = (230, 210, 170)
+            elif i == 25: color = (230, 210, 170)
+            elif i == 26: color = (240, 240, 210)
+            elif i == 27: color = (230, 210, 170)
+            elif i == 28: color = (240, 240, 210)
+            elif i == 29: color = (230, 210, 170)
+
+            pygame.draw.rect(self.screen, color, rect)
+            pygame.draw.rect(self.screen, COLOR_LINES, rect, 2)
+
+            text = self.font.render(str(i + 1), True, (100, 100, 100))
+            self.screen.blit(text, (x + 5, y + 5))
+
+            self.draw_symbols(i, x, y)
+
+            piece = self.game.board.squares[i]
+            if piece != 0:
+                center = (x + SQUARE_SIZE // 2, y + SQUARE_SIZE // 2)
+                p_color = COLOR_P1 if piece == PLAYER_1 else COLOR_P2
+                pygame.draw.circle(self.screen, p_color, center, SQUARE_SIZE // 3)
+                pygame.draw.circle(self.screen, (100, 100, 100), center, SQUARE_SIZE // 3, 2)
+
+        for idx in self.movable_pieces:
+            if 0 <= idx < BOARD_SIZE:
+                x, y = self.get_screen_pos(idx)
+                border_rect = pygame.Rect(x + 3, y + 3, SQUARE_SIZE - 6, SQUARE_SIZE - 6)
+                pygame.draw.rect(self.screen, COLOR_HIGHLIGHT, border_rect, width=6, border_radius=12)
+
+        if self.selected_piece is not None:
+            x, y = self.get_screen_pos(self.selected_piece)
+            pygame.draw.rect(self.screen, COLOR_HIGHLIGHT, (x, y, SQUARE_SIZE, SQUARE_SIZE), 3)
+
+        for move in self.valid_moves:
+            target = move[1]
+            if target < BOARD_SIZE:
+                x, y = self.get_screen_pos(target)
+                pygame.draw.circle(self.screen, COLOR_HIGHLIGHT, (x + SQUARE_SIZE // 2, y + SQUARE_SIZE // 2), 10)
+            else:
+                text = self.font.render("Exit", True, COLOR_HIGHLIGHT)
+                self.screen.blit(text, (SCREEN_WIDTH - 80, SCREEN_HEIGHT - 80))
+
+        title = self.large_font.render("SENET", True, COLOR_TEXT)
+        self.screen.blit(title, (SCREEN_WIDTH // 2 - 50, 50))
+
+        info = self.font.render(
+            f"Current Player: {'Human (White)' if self.game.current_player == PLAYER_1 else 'AI (Black)'}",
+            True, COLOR_TEXT
+        )
+        self.screen.blit(info, (50, 100))
+
+        dice_text = self.font.render(f"Last Roll: {self.current_roll}", True, COLOR_TEXT)
+        self.screen.blit(dice_text, (50, 140))
+
+        msg = self.font.render(self.message, True, (0, 0, 150))
+        self.screen.blit(msg, (SCREEN_WIDTH // 2 - 200, SCREEN_HEIGHT - 50))
+
+        if self.ai_move_display and self.ai_move_display_timer > 0:
+            ai_msg = self.font.render(self.ai_move_display, True, (200, 0, 0))
+            ai_rect = ai_msg.get_rect(center=(SCREEN_WIDTH // 2, BOARD_OFFSET_Y + 3 * SQUARE_SIZE + 30))
+            bg_rect = ai_rect.inflate(20, 10)
+            pygame.draw.rect(self.screen, (255, 230, 230), bg_rect)
+            pygame.draw.rect(self.screen, (200, 0, 0), bg_rect, 2)
+            self.screen.blit(ai_msg, ai_rect)
+            self.ai_move_display_timer -= 1
+
+        if self.hint_message and self.hint_timer > 0:
+            hint_msg = self.font.render(self.hint_message, True, (0, 100, 200))
+            hint_rect = hint_msg.get_rect(center=(SCREEN_WIDTH // 2, 190))
+            bg_rect = hint_rect.inflate(20, 10)
+            pygame.draw.rect(self.screen, (200, 220, 255), bg_rect)
+            pygame.draw.rect(self.screen, (0, 100, 200), bg_rect, 2)
+            self.screen.blit(hint_msg, hint_rect)
+            self.hint_timer -= 1
+
+            if self.hint_move:
+                x, y = self.get_screen_pos(self.hint_move[0])
+                pygame.draw.rect(self.screen, (0, 150, 255), (x, y, SQUARE_SIZE, SQUARE_SIZE), 4)
+
+                if self.hint_move[1] < BOARD_SIZE:
+                    x, y = self.get_screen_pos(self.hint_move[1])
+                    pygame.draw.circle(self.screen, (0, 150, 255), (x + SQUARE_SIZE // 2, y + SQUARE_SIZE // 2), 15)
+
+        stick_y = 100
+        stick_x = SCREEN_WIDTH - 200
+        for i, is_light in enumerate(self.game.sticks):
+            color = (255, 255, 255) if is_light else (50, 50, 50)
+            pygame.draw.rect(self.screen, color, (stick_x + i * 30, stick_y, 20, 80))
+            pygame.draw.rect(self.screen, (0, 0, 0), (stick_x + i * 30, stick_y, 20, 80), 2)
+
+        depth_label = self.font.render(f"AI Depth: {self.ai.max_depth}", True, COLOR_TEXT)
+        self.screen.blit(depth_label, (760, 560))
+        pygame.draw.rect(self.screen, (180, 180, 180), self.depth_minus_rect)
+        pygame.draw.rect(self.screen, (180, 180, 180), self.depth_plus_rect)
+        minus_text = self.font.render("-", True, COLOR_TEXT)
+        plus_text = self.font.render("+", True, COLOR_TEXT)
+        self.screen.blit(minus_text, (810, 610))
+        self.screen.blit(plus_text, (860, 610))
+
+        if self.exit_available:
+            pygame.draw.rect(self.screen, (60, 150, 60), self.exit_button_rect, border_radius=6)
+            exit_text = self.font.render("Exit", True, (255, 255, 255))
+            self.screen.blit(exit_text, (self.exit_button_rect.x + 35, self.exit_button_rect.y + 8))
+
+        pygame.draw.rect(self.screen, (150, 60, 60), self.restart_rect, border_radius=6)
+        restart_text = self.font.render("Restart", True, (255, 255, 255))
+        self.screen.blit(restart_text, (self.restart_rect.x + 20, self.restart_rect.y + 8))
+
+        pygame.draw.rect(self.screen, (60, 120, 60), self.hint_rect, border_radius=6)
+        hint_text = self.font.render("Hint", True, (255, 255, 255))
+        self.screen.blit(hint_text, (self.hint_rect.x + 35, self.hint_rect.y + 8))
+
+        self.draw_piece_counts()
+
+    def draw_piece_counts(self):
+        white_count = self.game.board.squares.count(PLAYER_1)
+        black_count = self.game.board.squares.count(PLAYER_2)
+
+        board_height = 3 * SQUARE_SIZE
+        panel_height = board_height
+
+        panel_rect = pygame.Rect(10, BOARD_OFFSET_Y, 80, panel_height)
+        pygame.draw.rect(self.screen, (220, 200, 160), panel_rect)
+        pygame.draw.rect(self.screen, COLOR_LINES, panel_rect, 2)
+
+        human_label = self.font.render("Human", True, COLOR_TEXT)
+        human_rect = human_label.get_rect(center=(50, BOARD_OFFSET_Y + 30))
+        self.screen.blit(human_label, human_rect)
+
+        human_count_text = self.font.render(str(white_count), True, COLOR_TEXT)
+        human_count_rect = human_count_text.get_rect(center=(50, BOARD_OFFSET_Y + 60))
+        self.screen.blit(human_count_text, human_count_rect)
+
+        pygame.draw.circle(self.screen, COLOR_P1, (50, BOARD_OFFSET_Y + 100), 16)
+        pygame.draw.circle(self.screen, (100, 100, 100), (50, BOARD_OFFSET_Y + 100), 16, 2)
+
+        separator_y = BOARD_OFFSET_Y + panel_height // 2
+        pygame.draw.line(self.screen, COLOR_LINES, (20, separator_y), (80, separator_y), 2)
+
+        ai_label = self.font.render("AI", True, COLOR_TEXT)
+        ai_rect = ai_label.get_rect(center=(50, separator_y + 30))
+        self.screen.blit(ai_label, ai_rect)
+
+        ai_count_text = self.font.render(str(black_count), True, COLOR_TEXT)
+        ai_count_rect = ai_count_text.get_rect(center=(50, separator_y + 60))
+        self.screen.blit(ai_count_text, ai_count_rect)
+
+        pygame.draw.circle(self.screen, COLOR_P2, (50, separator_y + 100), 16)
+        pygame.draw.circle(self.screen, (100, 100, 100), (50, separator_y + 100), 16, 2)
+
+    def draw_symbols(self, i, x, y):
+        img = None
+        if i == 14: img = self.house_images["rebirth"]
+        elif i == 25: img = self.house_images["happiness"]
+        elif i == 26: img = self.house_images["water"]
+        elif i == 27: img = self.house_images["three_truths"]
+        elif i == 28: img = self.house_images["re_atoum"]
+        elif i == 29: img = self.house_images["horus"]
+        if img:
+            pad = 6
+            scaled = pygame.transform.smoothscale(img, (SQUARE_SIZE - 2*pad, SQUARE_SIZE - 2*pad))
+            bg_rect = pygame.Rect(x + 3, y + 3, SQUARE_SIZE - 6, SQUARE_SIZE - 6)
+            pygame.draw.rect(self.screen, (245, 235, 215), bg_rect, border_radius=8)
+            pygame.draw.rect(self.screen, (100, 100, 100), bg_rect, 1, border_radius=8)
+            self.screen.blit(scaled, (x + pad, y + pad))
+
+```
+
+---
+
